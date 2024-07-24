@@ -2,16 +2,37 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
 import { Line } from 'vue-chartjs'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
 const matches = ref('')
 const data = ref({
-  labels: ['a', 'b', 'c'],
+  labels: ['one', 'two', 'three'],
   datasets: [
     {
-      label: 'testing',
-      backgroundColor: '#f87979',
-      data: [30, 50, 24]
+      label: "test",
+      backgroundColor: "#f87979",
+      data: [12, 53, 23, 74, 23]
     }
   ]
 })
@@ -36,9 +57,12 @@ onMounted(() => {
     <Line :data="data" />
     <hr />
     <div v-for="match in matches.data" :key="match" style="border: 1px solid black">
-      <div>{{ match.date_raw }}</div>
-      <div>{{ match.elo }}</div>
-      <div>{{ match.mmr_change_to_last_game }}</div>
+      <div>Date: {{ match.date_raw }}</div>
+      <div>Elo: {{ match.elo }}</div>
+      <div>LP: {{ match.elo % 100 }}</div>
+      <div>Elo change: {{ match.mmr_change_to_last_game }}</div>
+      <div>{{ match.currenttier }} {{ match.currenttierpatched }}</div>
+      <div>Current rank: {{ match.currenttierpatched }} {{ match.elo % 100 }}LP</div>
       <img :src="match.images.small" alt="rank icon" />
     </div>
     
