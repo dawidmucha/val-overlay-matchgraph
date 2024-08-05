@@ -1,7 +1,10 @@
+<!-- eslint-disable no-unused-vars -->
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
+
+import moment from 'moment';
 
 import {
   Chart as ChartJS,
@@ -27,14 +30,10 @@ ChartJS.register(
 
 const matches = ref('')
 const data = ref({
-  labels: ['one', 'two', 'three'],
-  datasets: [
-    {
-      label: "test",
-      backgroundColor: "#f87979",
-      data: [12, 53, 23, 74, 23]
-    }
-  ]
+  labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
+  datasets: [{
+    data: [12, 14, 16, 13],
+  }]
 })
 
 const route = useRoute()
@@ -42,6 +41,18 @@ const route = useRoute()
 const getRecentMatches = async () => {
   axios.get(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${route.params.region}/${route.params.name}/${route.params.tag}?api_key=${process.env.VUE_APP_VALAPI}`).then((res) => {
     matches.value = res.data 
+    const eloHistory = res.data.data.map(match => match.elo)
+    const dateHistory = res.data.data.map(match => {
+      console.log(moment.unix(match.date_raw).fromNow())
+      return moment.unix(match.date_raw).fromNow()
+    })
+
+    data.value = {
+      labels: dateHistory.reverse(),
+      datasets: [{
+        data: eloHistory.reverse()
+      }]
+    }
   })
 }
 
@@ -54,7 +65,9 @@ onMounted(() => {
   <div>
     overlay {{ $route.params.name }} {{ $route.params.tag }} {{ $route.params.region }}
     <hr />
-    <Line :data="data" />
+    <div class="lineChart">
+      <Line :data="data" />
+    </div>
     <hr />
     <div v-for="match in matches.data" :key="match" style="border: 1px solid black">
       <div>Date: {{ match.date_raw }}</div>
@@ -68,3 +81,9 @@ onMounted(() => {
     
   </div>
 </template>
+
+<style scoped>
+.lineChart {
+  width: 1000px;
+}
+</style>
