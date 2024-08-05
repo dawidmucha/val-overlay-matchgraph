@@ -30,10 +30,26 @@ ChartJS.register(
 
 const matches = ref('')
 const data = ref({
-  labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
+  labels: [],
   datasets: [{
-    data: [12, 14, 16, 13],
+    data: [],
   }]
+})
+
+const options = ref({
+  elements: {
+    point: {
+      radius: 2
+    },
+    line: {
+      borderColor: 'black'
+    }
+  },
+  plugins: {
+    legend: {
+      display: false
+    }
+  }
 })
 
 const route = useRoute()
@@ -56,6 +72,10 @@ const getRecentMatches = async () => {
   })
 }
 
+const eloToRankShort = (elo) => {
+  
+}
+
 onMounted(() => {
   getRecentMatches()
 })
@@ -66,7 +86,7 @@ onMounted(() => {
     overlay {{ $route.params.name }} {{ $route.params.tag }} {{ $route.params.region }}
     <hr />
     <div class="lineChart">
-      <Line :data="data" />
+      <Line :data="data" :options="options" />
     </div>
     <hr />
     <div v-for="match in matches.data" :key="match" style="border: 1px solid black">
