@@ -3,30 +3,9 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
+import moment from 'moment'
 
-import moment from 'moment';
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js'
-import { Line } from 'vue-chartjs'
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
 
 const matches = ref('')
 const data = ref({
@@ -37,20 +16,18 @@ const data = ref({
 })
 
 const options = ref({
-  elements: {
-    point: {
-      radius: 2
+  chart: {
+    type: 'line',
+    toolbar: {
+      show: false
     },
-    line: {
-      borderColor: 'black'
-    }
-  },
-  plugins: {
-    legend: {
-      display: false
+    dataLabels: {
+      enabled: true,
+      enabledOnSeries: true
     }
   }
 })
+const series = ref([])
 
 const route = useRoute()
 
@@ -63,12 +40,10 @@ const getRecentMatches = async () => {
       return moment.unix(match.date_raw).fromNow()
     })
 
-    data.value = {
-      labels: dateHistory.reverse(),
-      datasets: [{
-        data: eloHistory.reverse()
-      }]
-    }
+    series.value = [{
+      name: "elo",
+      data: eloHistory.reverse()
+    }]
   })
 }
 
@@ -86,7 +61,8 @@ onMounted(() => {
     overlay {{ $route.params.name }} {{ $route.params.tag }} {{ $route.params.region }}
     <hr />
     <div class="lineChart">
-      <Line :data="data" :options="options" />
+      <apexchart width="500" type="line" :options="options" :series="series" />
+      chart
     </div>
     <hr />
     <div v-for="match in matches.data" :key="match" style="border: 1px solid black">
