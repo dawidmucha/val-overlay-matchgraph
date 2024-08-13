@@ -66,137 +66,148 @@ const options = ref({
     yaxis: [
       {
         y: 0,
-        y2: 99,
-        fillColor: '#c3c3c5',
+        y2: 100,
+        fillColor: '#afafaf',
       },
       {
         y: 100,
-        y2: 199,
-        fillColor: '#949495',
+        y2: 200,
+        fillColor: '#888888',
       },
       {
         y: 200,
-        y2: 299,
-        fillColor: '#646464',
+        y2: 300,
+        fillColor: '#4e4e4e',
       },
       {
         y: 300,
-        y2: 399,
-        fillColor: '#cab692',
+        y2: 400,
+        fillColor: '#c0a78c',
       },
       {
         y: 400,
-        y2: 499,
-        fillColor: '#a5855d',
+        y2: 500,
+        fillColor: '#a17c54',
       },
       {
         y: 500,
-        y2: 599,
-        fillColor: '#986c1a',
+        y2: 600,
+        fillColor: '#723b01',
       },
       {
         y: 600,
-        y2: 699,
-        fillColor: '#f4fbf8',
+        y2: 700,
+        fillColor: '#cccccc',
       },
       {
         y: 700,
-        y2: 799,
-        fillColor: '#cdd3d1',
+        y2: 800,
+        fillColor: '#b3b3b3',
       },
       {
         y: 800,
-        y2: 899,
-        fillColor: '#9fa4a2',
+        y2: 900,
+        fillColor: '#8e8e8e',
       },
       {
         y: 900,
-        y2: 999,
-        fillColor: '#faf6df',
+        y2: 1000,
+        fillColor: '#f8ff8c',
       },
       {
         y: 1000,
-        y2: 1099,
-        fillColor: '#ecce56',
+        y2: 1100,
+        fillColor: '#f5ff54',
       },
       {
         y: 1100,
-        y2: 1199,
-        fillColor: '#d39230',
+        y2: 1200,
+        fillColor: '#f0ff01',
       },
       {
         y: 1200,
-        y2: 1299,
-        fillColor: '#54d3e0',
+        y2: 1300,
+        fillColor: '#8cdee3',
       },
       {
         y: 1300,
-        y2: 1399,
-        fillColor: '#39a1b2',
+        y2: 1400,
+        fillColor: '#54cdd5',
       },
       {
         y: 1400,
-        y2: 1499,
-        fillColor: '#3b717a',
+        y2: 1500,
+        fillColor: '#01b5c0',
       },
       {
         y: 1500,
-        y2: 1599,
-        fillColor: '#f0cef7',
+        y2: 1600,
+        fillColor: '#da8ce8',
       },
       {
         y: 1600,
-        y2: 1699,
-        fillColor: '#c587f5',
+        y2: 1700,
+        fillColor: '#c854dd',
       },
       {
         y: 1700,
-        y2: 1799,
-        fillColor: '#a770f1',
+        y2: 1800,
+        fillColor: '#ad01cc',
       },
       {
         y: 1800,
-        y2: 1899,
-        fillColor: '#b6ffd7',
+        y2: 1900,
+        fillColor: '#8cdd8e',
       },
       {
         y: 1900,
-        y2: 1999,
-        fillColor: '#3cb67c',
+        y2: 2000,
+        fillColor: '#54cc57',
       },
       {
         y: 2000,
-        y2: 2099,
-        fillColor: '#23a760',
+        y2: 2100,
+        fillColor: '#01b305',
       },
       {
         y: 2100,
-        y2: 2199,
-        fillColor: '#f4c0ad',
+        y2: 2200,
+        fillColor: '#ff8c8c',
       },
       {
         y: 2200,
-        y2: 2299,
-        fillColor: '#e3746a',
+        y2: 2300,
+        fillColor: '#ff5454',
       },
       {
         y: 2300,
-        y2: 2399,
-        fillColor: '#b02639',
+        y2: 2400,
+        fillColor: '#ff0101',
       },
       {
         y: 2400,
         y2: 5000,
-        fillColor: '#ffa42f',
+        fillColor: '#ffd801',
       },
     ]
   },
   yaxis: {
+    stepSize: 25,
+    forceNiceScale: true,
     labels: {
       formatter: function (v, i) {
         return eloToRankShort(v, i)
       }
     }
+  },
+  xaxis: {
+    labels: {
+      show: false
+    }
+  },
+  markers: {
+    size: 4,
+    colors: '#000000'
   }
 })
 const series = ref([])
@@ -214,8 +225,8 @@ const getRecentMatches = async () => {
 
     series.value = [{
       name: "elo",
-      // data: eloHistory.reverse()
-      data: [0, 500, 1000, 1500, 2000, 2300]
+      data: eloHistory.reverse()
+      // data: [0, 500, 1000, 1500, 2000, 2300]
     }]
   })
 }
