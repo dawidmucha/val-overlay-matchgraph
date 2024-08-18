@@ -5,41 +5,42 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment'
 
+
 const eloToRankShort = (elo, index) => {
-    const lp = elo % 100;
-    const rankNumber = (elo - lp) / 100
+    const rr = elo > 2100 ? elo - 2100 : elo % 100; // for correct RR in radiant
+    const rankNumber = (elo - rr) / 100
+    console.log("elo", elo)
     let rankName
-    switch(rankNumber) {
-      case  0: rankName = "I1"; break;
-      case  1: rankName = "I2"; break;
-      case  2: rankName = "I3"; break;
-      case  3: rankName = "B1"; break;
-      case  4: rankName = "B2"; break;
-      case  5: rankName = "B3"; break;
-      case  6: rankName = "S1"; break;
-      case  7: rankName = "S2"; break;
-      case  8: rankName = "S3"; break;
-      case  9: rankName = "G1"; break;
-      case 10: rankName = "G2"; break;
-      case 11: rankName = "G3"; break;
-      case 12: rankName = "P1"; break;
-      case 13: rankName = "P2"; break;
-      case 14: rankName = "P3"; break;
-      case 15: rankName = "D1"; break;
-      case 16: rankName = "D2"; break;
-      case 17: rankName = "D3"; break;
-      case 18: rankName = "Asc1"; break;
-      case 19: rankName = "Asc2"; break;
-      case 20: rankName = "Asc3"; break;
-      case 21: rankName = "I1"; break;
-      case 22: rankName = "I2"; break;
-      case 23: rankName = "I3"; break;
-      case 24: rankName = "Radiant"; break;
+    switch(true) {
+      case rankNumber ===  0: rankName = "I1"; break;
+      case rankNumber ===  1: rankName = "I2"; break;
+      case rankNumber ===  2: rankName = "I3"; break;
+      case rankNumber ===  3: rankName = "B1"; break;
+      case rankNumber ===  4: rankName = "B2"; break;
+      case rankNumber ===  5: rankName = "B3"; break;
+      case rankNumber ===  6: rankName = "S1"; break;
+      case rankNumber ===  7: rankName = "S2"; break;
+      case rankNumber ===  8: rankName = "S3"; break;
+      case rankNumber ===  9: rankName = "G1"; break;
+      case rankNumber === 10: rankName = "G2"; break;
+      case rankNumber === 11: rankName = "G3"; break;
+      case rankNumber === 12: rankName = "P1"; break;
+      case rankNumber === 13: rankName = "P2"; break;
+      case rankNumber === 14: rankName = "P3"; break;
+      case rankNumber === 15: rankName = "D1"; break;
+      case rankNumber === 16: rankName = "D2"; break;
+      case rankNumber === 17: rankName = "D3"; break;
+      case rankNumber === 18: rankName = "A1"; break;
+      case rankNumber === 19: rankName = "A2"; break;
+      case rankNumber === 20: rankName = "A3"; break; // https://support-valorant.riotgames.com/hc/en-us/articles/4405964120339-Rank-Rating-RR-for-Immortal-and-Radiant-Ranks
+      case rankNumber === 21: rankName = "I1"; break;
+      case rankNumber === 22: rankName = "I2"; break;
+      case rankNumber === 23: rankName = "I3"; break;
+      case rankNumber  >= 24: rankName = "Radiant"; break;
       default: rankName = ""; break;
     }
 
-    const rankShort = rankName + " " + lp + "LP"
-    console.log(rankShort)
+    const rankShort = rankName + " " + rr + "RR"
     return rankShort
 }
 
@@ -54,6 +55,7 @@ const data = ref({
 const options = ref({
   chart: {
     type: 'line',
+    height: 100,
     toolbar: {
       show: false
     },
@@ -191,23 +193,28 @@ const options = ref({
       },
     ]
   },
+  xaxis: {
+    labels: {
+      show: false
+    }
+  },
   yaxis: {
     stepSize: 25,
     forceNiceScale: true,
+    opposite: true,
     labels: {
       formatter: function (v, i) {
         return eloToRankShort(v, i)
       }
     }
   },
-  xaxis: {
-    labels: {
-      show: false
-    }
-  },
   markers: {
-    size: 4,
+    size: 3,
     colors: '#000000'
+  },
+  stroke: {
+    show: true,
+    width: 2
   }
 })
 const series = ref([])
@@ -216,11 +223,11 @@ const route = useRoute()
 
 const getRecentMatches = async () => {
   axios.get(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${route.params.region}/${route.params.name}/${route.params.tag}?api_key=${process.env.VUE_APP_VALAPI}`).then((res) => {
+    console.log(res.data)
     matches.value = res.data 
     const eloHistory = res.data.data.map(match => match.elo)
     const dateHistory = res.data.data.map(match => {
-      console.log(moment.unix(match.date_raw).fromNow())
-      return moment.unix(match.date_raw).fromNow()
+     return moment.unix(match.date_raw).fromNow()
     })
 
     series.value = [{
@@ -242,26 +249,36 @@ onMounted(() => {
   <div>
     overlay {{ $route.params.name }} {{ $route.params.tag }} {{ $route.params.region }}
     <hr />
-    <div class="lineChart">
-      <apexchart width="500" type="line" :options="options" :series="series" />
-      chart
-    </div>
-    <hr />
-    <div v-for="match in matches.data" :key="match" style="border: 1px solid black">
-      <div>Date: {{ match.date_raw }}</div>
-      <div>Elo: {{ match.elo }}</div>
-      <div>LP: {{ match.elo % 100 }}</div>
-      <div>Elo change: {{ match.mmr_change_to_last_game }}</div>
-      <div>{{ match.currenttier }} {{ match.currenttierpatched }}</div>
-      <div>Current rank: {{ match.currenttierpatched }} {{ match.elo % 100 }}LP</div>
-      <img :src="match.images.small" alt="rank icon" />
+    <div class="embed">
+      <div class="lineChart">
+        <apexchart type="line" :options="options" :series="series" width="600px" height="200px" />
+      </div>
+      <div class="sidePanel">
+        <div><b>Current rank:</b></div>
+        <div v-if="matches.data">{{ matches.data[0].currenttierpatched}} {{ matches.data[0].elo % 100 }}RR</div>
+        <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" /></div>
+        <div><b>RR Change: </b>
+          <span v-if="matches.data"><span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }}</span>
+        </div>
+      </div>
     </div>
     
   </div>
 </template>
 
 <style scoped>
-.lineChart {
-  width: 1000px;
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Space+Mono&display=swap');
+
+.embed {
+  display: flex;
+
+  font-family: 'Roboto', sans-serif;
+}
+
+.sidePanel {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
 }
 </style>
