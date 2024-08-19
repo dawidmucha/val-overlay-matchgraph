@@ -7,41 +7,76 @@ import moment from 'moment'
 
 
 const eloToRankShort = (elo, index) => {
-    const rr = elo > 2100 ? elo - 2100 : elo % 100; // for correct RR in radiant
-    const rankNumber = (elo - rr) / 100
-    console.log("elo", elo)
-    let rankName
-    switch(true) {
-      case rankNumber ===  0: rankName = "I1"; break;
-      case rankNumber ===  1: rankName = "I2"; break;
-      case rankNumber ===  2: rankName = "I3"; break;
-      case rankNumber ===  3: rankName = "B1"; break;
-      case rankNumber ===  4: rankName = "B2"; break;
-      case rankNumber ===  5: rankName = "B3"; break;
-      case rankNumber ===  6: rankName = "S1"; break;
-      case rankNumber ===  7: rankName = "S2"; break;
-      case rankNumber ===  8: rankName = "S3"; break;
-      case rankNumber ===  9: rankName = "G1"; break;
-      case rankNumber === 10: rankName = "G2"; break;
-      case rankNumber === 11: rankName = "G3"; break;
-      case rankNumber === 12: rankName = "P1"; break;
-      case rankNumber === 13: rankName = "P2"; break;
-      case rankNumber === 14: rankName = "P3"; break;
-      case rankNumber === 15: rankName = "D1"; break;
-      case rankNumber === 16: rankName = "D2"; break;
-      case rankNumber === 17: rankName = "D3"; break;
-      case rankNumber === 18: rankName = "A1"; break;
-      case rankNumber === 19: rankName = "A2"; break;
-      case rankNumber === 20: rankName = "A3"; break; // https://support-valorant.riotgames.com/hc/en-us/articles/4405964120339-Rank-Rating-RR-for-Immortal-and-Radiant-Ranks
-      case rankNumber === 21: rankName = "I1"; break;
-      case rankNumber === 22: rankName = "I2"; break;
-      case rankNumber === 23: rankName = "I3"; break;
-      case rankNumber  >= 24: rankName = "Radiant"; break;
-      default: rankName = ""; break;
-    }
+  const isImmoOrAbove = elo > 2100 ? true : false
+  const region = route.params.region
+  let rr, rankName
+  console.log(elo)
 
-    const rankShort = rankName + " " + rr + "RR"
-    return rankShort
+  if(isImmoOrAbove) {
+    rr = elo - 2100
+
+    switch(region) {
+      case "latam": case "kr":
+        if(rr >= 200) rankName = "Radiant"
+        else if(rr >= 150) rankName = "Immo3"
+        else if(rr >= 90) rankName = "Immo2"
+        else rankName = "Immo1"; break
+      case "eu":
+        if(rr >= 550) rankName = "Radiant"
+        else if(rr >= 200) rankName = "Immo3"
+        else if(rr >= 100) rankName = "Immo2"
+        else rankName = "Immo1"; break
+      case "na":
+        if(rr >= 450) rankName = "Radiant"
+        else if(rr >= 200) rankName = "Immo3"
+        else if(rr >= 90) rankName = "Immo2"
+        else rankName = "Immo1"; break
+      case "br":
+        if(rr >= 340) rankName = "Radiant"
+        else if(rr >= 230) rankName = "Immo3"
+        else if(rr >= 100) rankName = "Immo2"
+        else rankName = "Immo1"; break
+      case "ap":
+        if(rr >= 400) rankName = "Radiant"
+        else if(rr >= 200) rankName = "Immo3"
+        else if(rr >= 80) rankName = "Immo2"
+        else rankName = "Immo1"; break
+    }
+  } else {
+    rr = elo % 100
+    const rankNumber = (elo - rr) / 100
+
+    if(elo === 2100) return "Immo1 0RR" // edge case for a3-immo1
+
+    switch(rankNumber) {
+      case  0: rankName = "I1"; break
+      case  1: rankName = "I2"; break
+      case  2: rankName = "I3"; break
+      case  3: rankName = "B1"; break
+      case  4: rankName = "B2"; break
+      case  5: rankName = "B3"; break
+      case  6: rankName = "S1"; break
+      case  7: rankName = "S2"; break
+      case  8: rankName = "S3"; break
+      case  9: rankName = "G1"; break
+      case 10: rankName = "G2"; break
+      case 11: rankName = "G3"; break
+      case 12: rankName = "P1"; break
+      case 13: rankName = "P2"; break
+      case 14: rankName = "P3"; break
+      case 15: rankName = "D1"; break
+      case 16: rankName = "D2"; break
+      case 17: rankName = "D3"; break
+      case 18: rankName = "A1"; break
+      case 19: rankName = "A2"; break
+      case 20: rankName = "A3"; break 
+      default: rankName = "#ERROR!";
+    }
+  }
+
+
+  const rankShort = rankName + " " + rr + "RR"
+  return rankShort
 }
 
 const matches = ref('')
@@ -64,7 +99,7 @@ const options = ref({
       enabledOnSeries: true
     },
   },
-  annotations: {
+  annotations: { // TODO: adjust backgrounds for immo/radiant based on the region
     yaxis: [
       {
         y: 0,
@@ -255,7 +290,7 @@ onMounted(() => {
       </div>
       <div class="sidePanel">
         <div><b>Current rank:</b></div>
-        <div v-if="matches.data">{{ matches.data[0].currenttierpatched}} {{ matches.data[0].elo % 100 }}RR</div>
+        <div v-if="matches.data">{{ matches.data[0].currenttierpatched}} {{ matches.data[0].ranking_in_tier }}RR</div>
         <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" /></div>
         <div><b>RR Change: </b>
           <span v-if="matches.data"><span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }}</span>
