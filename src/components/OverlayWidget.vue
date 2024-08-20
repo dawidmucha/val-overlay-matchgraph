@@ -5,12 +5,10 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment'
 
-
 const eloToRankShort = (elo, index) => {
   const isImmoOrAbove = elo > 2100 ? true : false
   const region = route.params.region
   let rr, rankName
-  console.log(elo)
 
   if(isImmoOrAbove) {
     rr = elo - 2100
@@ -86,6 +84,8 @@ const data = ref({
     data: [],
   }]
 })
+
+const immoRr = ref([2200, 2300, 2400])
 
 const options = ref({
   chart: {
@@ -206,26 +206,6 @@ const options = ref({
         y2: 2100,
         fillColor: '#01b305',
       },
-      {
-        y: 2100,
-        y2: 2200,
-        fillColor: '#ff8c8c',
-      },
-      {
-        y: 2200,
-        y2: 2300,
-        fillColor: '#ff5454',
-      },
-      {
-        y: 2300,
-        y2: 2400,
-        fillColor: '#ff0101',
-      },
-      {
-        y: 2400,
-        y2: 5000,
-        fillColor: '#ffd801',
-      },
     ]
   },
   xaxis: {
@@ -258,7 +238,6 @@ const route = useRoute()
 
 const getRecentMatches = async () => {
   axios.get(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${route.params.region}/${route.params.name}/${route.params.tag}?api_key=${process.env.VUE_APP_VALAPI}`).then((res) => {
-    console.log(res.data)
     matches.value = res.data 
     const eloHistory = res.data.data.map(match => match.elo)
     const dateHistory = res.data.data.map(match => {
@@ -276,6 +255,37 @@ const getRecentMatches = async () => {
 
 
 onMounted(() => {
+  switch(route.params.region) {
+    case "latam": case "kr": immoRr.value = [2190, 2250, 2300]; break
+    case "br": immoRr.value = [2200, 2330, 2440]; break
+    case "na": immoRr.value = [2190, 2300, 2550]; break
+    case "apc": immoRr.value = [2180, 2300, 2500]; break
+    case "eu": immoRr.value = [2200, 2250, 2650]; break
+  }
+
+  options.value.annotations.yaxis.push(
+    {
+      y: 2100,
+      y2: immoRr.value[0],
+      fillColor: '#ff8c8c',
+    },
+    {
+      y: immoRr.value[0],
+      y2: immoRr.value[1],
+      fillColor: '#ff5454',
+    },
+    {
+      y: immoRr.value[1],
+      y2: immoRr.value[2],
+      fillColor: '#ff0101',
+    },
+    {
+      y: immoRr.value[2],
+      y2: 5000,
+      fillColor: '#ffd801',
+    },
+  )
+
   getRecentMatches()
 })
 </script>
@@ -284,6 +294,7 @@ onMounted(() => {
   <div>
     overlay {{ $route.params.name }} {{ $route.params.tag }} {{ $route.params.region }}
     <hr />
+    {{ immoRr }}
     <div class="embed">
       <div class="lineChart">
         <apexchart type="line" :options="options" :series="series" width="600px" height="200px" />
