@@ -5,6 +5,8 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment'
 
+const opacity = ref(0.7)
+
 const eloToRankShort = (elo, index) => {
   const isImmoOrAbove = elo > 2100 ? true : false
   const region = route.params.region
@@ -95,116 +97,142 @@ const options = ref({
       show: false
     },
     dataLabels: {
-      enabled: true,
-      enabledOnSeries: true
+      enabled: false,
+      enabledOnSeries: false
     },
   },
-  annotations: { // TODO: adjust backgrounds for immo/radiant based on the region
+  grid: {
+    show: true,
+    borderColor: "white",
+  },
+  annotations: {
+    opacity: 0,
     yaxis: [
       {
         y: 0,
         y2: 100,
-        fillColor: '#afafaf',
+        fillColor: '#afafaf', //i1
+        opacity: opacity.value,
       },
       {
         y: 100,
         y2: 200,
-        fillColor: '#888888',
+        fillColor: '#888888', //i2
+        opacity: opacity.value,
       },
       {
         y: 200,
         y2: 300,
-        fillColor: '#4e4e4e',
+        fillColor: '#4e4e4e', //i3
+        opacity: opacity.value,
       },
       {
         y: 300,
         y2: 400,
-        fillColor: '#c0a78c',
+        fillColor: '#c0a78c', //b1
+        opacity: opacity.value,
       },
       {
         y: 400,
         y2: 500,
-        fillColor: '#a17c54',
+        fillColor: '#a17c54', //b2
+        opacity: opacity.value,
       },
       {
         y: 500,
         y2: 600,
-        fillColor: '#723b01',
+        fillColor: '#723b01', //b3
+        opacity: opacity.value,
       },
       {
         y: 600,
         y2: 700,
-        fillColor: '#cccccc',
+        fillColor: '#cccccc', //s1
+        opacity: opacity.value,
       },
       {
         y: 700,
         y2: 800,
-        fillColor: '#b3b3b3',
+        fillColor: '#b3b3b3', //s2
+        opacity: opacity.value,
       },
       {
         y: 800,
         y2: 900,
-        fillColor: '#8e8e8e',
+        fillColor: '#8e8e8e', //s3
+        opacity: opacity.value,
       },
       {
         y: 900,
         y2: 1000,
-        fillColor: '#f8ff8c',
+        fillColor: '#f8ff8c', //g1
+        opacity: opacity.value,
       },
       {
         y: 1000,
         y2: 1100,
-        fillColor: '#f5ff54',
+        fillColor: '#f5ff54', //g2
+        opacity: opacity.value,
       },
       {
         y: 1100,
         y2: 1200,
-        fillColor: '#f0ff01',
+        fillColor: '#f0ff01', //g3
+        opacity: opacity.value,
       },
       {
         y: 1200,
         y2: 1300,
-        fillColor: '#8cdee3',
+        fillColor: '#8cdee3', //p1
+        opacity: opacity.value,
       },
       {
         y: 1300,
         y2: 1400,
-        fillColor: '#54cdd5',
+        fillColor: '#54cdd5', //p2
+        opacity: opacity.value,
       },
       {
         y: 1400,
         y2: 1500,
-        fillColor: '#01b5c0',
+        fillColor: '#01b5c0', //p3
+        opacity: opacity.value,
       },
       {
         y: 1500,
         y2: 1600,
-        fillColor: '#da8ce8',
+        fillColor: '#da8ce8', //d1
+        opacity: opacity.value,
       },
       {
         y: 1600,
         y2: 1700,
-        fillColor: '#c854dd',
+        fillColor: '#c854dd', //d2
+        opacity: opacity.value,
       },
       {
         y: 1700,
         y2: 1800,
-        fillColor: '#ad01cc',
+        fillColor: '#ad01cc', //d3
+        opacity: opacity.value,
       },
       {
         y: 1800,
         y2: 1900,
-        fillColor: '#8cdd8e',
+        fillColor: '#8cdd8e', //a1
+        opacity: opacity.value,
       },
       {
         y: 1900,
         y2: 2000,
-        fillColor: '#54cc57',
+        fillColor: '#54cc57', //a2
+        opacity: opacity.value,
       },
       {
         y: 2000,
         y2: 2100,
-        fillColor: '#01b305',
+        fillColor: '#01b305', //a3
+        opacity: opacity.value,
       },
     ]
   },
@@ -218,18 +246,24 @@ const options = ref({
     forceNiceScale: true,
     opposite: true,
     labels: {
+      show: false,
+      style: {
+        colors: 'white'
+      },
       formatter: function (v, i) {
         return eloToRankShort(v, i)
       }
     }
   },
   markers: {
-    size: 3,
-    colors: '#000000'
+    size: 6,
+    colors: 'white',
+    strokeWidth: 0
   },
   stroke: {
     show: true,
-    width: 2
+    width: 4,
+    colors: 'white'
   }
 })
 const series = ref([])
@@ -268,21 +302,25 @@ onMounted(() => {
       y: 2100,
       y2: immoRr.value[0],
       fillColor: '#ff8c8c',
+      opacity: opacity.value,
     },
     {
       y: immoRr.value[0],
       y2: immoRr.value[1],
       fillColor: '#ff5454',
+      opacity: opacity.value,
     },
     {
       y: immoRr.value[1],
       y2: immoRr.value[2],
       fillColor: '#ff0101',
+      opacity: opacity.value,
     },
     {
       y: immoRr.value[2],
       y2: 5000,
       fillColor: '#ffd801',
+      opacity: opacity.value,
     },
   )
 
@@ -292,20 +330,18 @@ onMounted(() => {
 
 <template>
   <div>
-    overlay {{ $route.params.name }} {{ $route.params.tag }} {{ $route.params.region }}
-    <hr />
-    {{ immoRr }}
     <div class="embed">
       <div class="lineChart">
-        <apexchart type="line" :options="options" :series="series" width="600px" height="200px" />
+        <apexchart type="line" :options="options" :series="series" width="600px" height="200px" style="padd" />
       </div>
       <div class="sidePanel">
-        <div><b>Current rank:</b></div>
-        <div v-if="matches.data">{{ matches.data[0].currenttierpatched}} {{ matches.data[0].ranking_in_tier }}RR</div>
-        <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" /></div>
-        <div><b>RR Change: </b>
-          <span v-if="matches.data"><span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }}</span>
+        <div class="sidePanelText">
+          <div v-if="matches.data">{{ matches.data[0].currenttierpatched}}</div>
+          <div v-if="matches.data">{{ matches.data[0].ranking_in_tier }}RR</div>
+          <div><span v-if="matches.data">(<span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }})</span></div>
         </div>
+
+        <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" style="width: 100px;" /></div>
       </div>
     </div>
     
@@ -317,14 +353,25 @@ onMounted(() => {
 
 .embed {
   display: flex;
-
   font-family: 'Roboto', sans-serif;
+  width: 750px;
+
+  color: white;
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,0.8016340325192577) 0%, rgba(0,0,0,0.7960317916228992) 75%, rgba(255,0,0,0) 100%);
 }
 
 .sidePanel {
  display: flex;
  flex-direction: column;
  align-items: center;
- justify-content: center;
+ justify-content: space-evenly;
+}
+
+.sidePanelText {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  filter: drop-shadow(0 0 0.5rem black);
 }
 </style>
