@@ -7,7 +7,78 @@ import moment from 'moment'
 
 const opacity = ref(0.7)
 
-const eloToRankShort = (elo, index) => {
+const eloToRank = (elo) => {
+  const isImmoOrAbove = elo > 2100 ? true : false
+  const region = route.params.region
+
+  if(isImmoOrAbove) {
+    switch(region) {
+      case 'latam': case 'kr':
+        switch(elo) {
+          case 2190: return "IMMO 2"
+          case 2250: return "IMMO 3"
+          case 2300: return "RADIANT"
+        }
+        break;
+      case 'br':
+        switch(elo) {
+          case 2200: return "IMMO 2"
+          case 2330: return "IMMO 3"
+          case 2440: return "RADIANT"
+        }
+        break;
+      case 'na':
+        switch(elo) {
+          case 2190: return "IMMO 2"
+          case 2300: return "IMMO 3"
+          case 2550: return "RADIANT"
+        }
+        break;
+      case 'ap':
+        switch(elo) {
+          case 2180: return "IMMO 2"
+          case 2300: return "IMMO 3"
+          case 2500: return "RADIANT"
+        }
+        break;
+      case 'eu':
+        switch(elo) {
+          case 2200: return "IMMO 2"
+          case 2300: return "IMMO 3"
+          case 2650: return "RADIANT"
+        }
+        break;
+    }
+  } else {
+    switch(elo) {
+      case    0: return "IRON 1"
+      case  100: return "IRON 2"
+      case  200: return "IRON 3"
+      case  300: return "BRNZ 1"
+      case  400: return "BRNZ 2"
+      case  500: return "BRNZ 3"
+      case  600: return "SILV 1"
+      case  700: return "SILV 2"
+      case  800: return "SILV 3"
+      case  900: return "GOLD 1"
+      case 1000: return "GOLD 2"
+      case 1100: return "GOLD 3"
+      case 1200: return "PLAT 1"
+      case 1300: return "PLAT 2"
+      case 1400: return "PLAT 3"
+      case 1500: return "DIA 1"
+      case 1600: return "DIA 2"
+      case 1700: return "DIA 3"
+      case 1800: return "ASC 1"
+      case 1900: return "ASC 2"
+      case 2000: return "ASC 3"
+      case 2100: return "IMMO 1"
+    }
+  }
+
+  return elo //fallback, if doesn't match any rank
+}
+const eloToRankShort = (elo, index) => { // turns Y axis value (e.g. 1710) into shortened rank name (e.g. D3 10RR)
   const isImmoOrAbove = elo > 2100 ? true : false
   const region = route.params.region
   let rr, rankName
@@ -242,23 +313,30 @@ const options = ref({
     }
   },
   yaxis: {
-    stepSize: 25,
+    stepSize: 100,
     forceNiceScale: true,
     opposite: true,
     labels: {
-      show: false,
+      show: true,
+      align: 'right',
+      rotate: 90,
       style: {
-        colors: 'white'
+        fontSize: '14px',
+        fontFamily: 'DM Sans',
+        fontWeight: 600,
+        colors: 'white',
+        cssClass: 'y-axis-label-letter-spacing'
       },
-      formatter: function (v, i) {
-        return eloToRankShort(v, i)
+      formatter: function (v) {
+        return eloToRank(v)
       }
     }
   },
   markers: {
-    size: 6,
+    size: 0,
     colors: 'white',
-    strokeWidth: 0
+    strokeWidth: 0,
+    lineCap: 'round'
   },
   stroke: {
     show: true,
@@ -348,8 +426,11 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style>
+/* Roboto */
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Space+Mono&display=swap');
+/* DM Sans */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
 .embed {
   display: flex;
@@ -373,5 +454,9 @@ onMounted(() => {
   font-size: 20px;
   font-weight: bold;
   filter: drop-shadow(0 0 0.5rem black);
+}
+
+.y-axis-label-letter-spacing {
+  letter-spacing: 1px;
 }
 </style>
