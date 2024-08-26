@@ -5,7 +5,25 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment'
 
-const opacity = ref(0.7)
+const opacity = ref(0.5)
+const fillColorList = [
+  '#afafaf','#888888','#4e4e4e',//iron
+  '#c0a78c','#a17c54','#723b01',//bronze
+  '#cccccc','#b3b3b3','#8e8e8e',//silver
+  '#f8ff8c','#f5ff54','#f0ff01',//gold
+  '#8cdee3','#54cdd5','#01b5c0',//platinum
+  '#da8ce8','#c854dd','#ad01cc',//diamond
+  '#8cdd8e','#54cc57','#01b305',//ascendant
+]
+const rankShort = [
+  'iron 1', 'iron 2', 'iron 3',
+  'brnz 1', 'brnz 2', 'brnz 3',
+  'slvr 1', 'slvr 2', 'slvr 3',
+  'gold 1', 'gold 2', 'gold 3',
+  'plat 1', 'plat 2', 'plat 3',
+  'dia 1', 'dia 2', 'dia 3',
+  'asc 1', 'asc 2', 'asc 3',
+]
 
 const eloToRank = (elo) => {
   const isImmoOrAbove = elo > 2100 ? true : false
@@ -157,6 +175,7 @@ const data = ref({
     data: [],
   }]
 })
+const peakElo = ref(0)
 
 const immoRr = ref([2200, 2300, 2400])
 
@@ -173,139 +192,40 @@ const options = ref({
     },
   },
   grid: {
-    show: true,
+    show: false,
     borderColor: "white",
   },
+  tooltip: {
+    enabled: false
+  },
   annotations: {
-    opacity: 0,
-    yaxis: [
-      {
-        y: 0,
-        y2: 100,
-        fillColor: '#afafaf', //i1
+    opacity: 1,
+    yaxis: Array.from(fillColorList, (color) => {
+      return {
+        y: fillColorList.indexOf(color) * 100,
+        y2: (fillColorList.indexOf(color) * 100) + 100,
+        fillColor: color,
         opacity: opacity.value,
-      },
-      {
-        y: 100,
-        y2: 200,
-        fillColor: '#888888', //i2
-        opacity: opacity.value,
-      },
-      {
-        y: 200,
-        y2: 300,
-        fillColor: '#4e4e4e', //i3
-        opacity: opacity.value,
-      },
-      {
-        y: 300,
-        y2: 400,
-        fillColor: '#c0a78c', //b1
-        opacity: opacity.value,
-      },
-      {
-        y: 400,
-        y2: 500,
-        fillColor: '#a17c54', //b2
-        opacity: opacity.value,
-      },
-      {
-        y: 500,
-        y2: 600,
-        fillColor: '#723b01', //b3
-        opacity: opacity.value,
-      },
-      {
-        y: 600,
-        y2: 700,
-        fillColor: '#cccccc', //s1
-        opacity: opacity.value,
-      },
-      {
-        y: 700,
-        y2: 800,
-        fillColor: '#b3b3b3', //s2
-        opacity: opacity.value,
-      },
-      {
-        y: 800,
-        y2: 900,
-        fillColor: '#8e8e8e', //s3
-        opacity: opacity.value,
-      },
-      {
-        y: 900,
-        y2: 1000,
-        fillColor: '#f8ff8c', //g1
-        opacity: opacity.value,
-      },
-      {
-        y: 1000,
-        y2: 1100,
-        fillColor: '#f5ff54', //g2
-        opacity: opacity.value,
-      },
-      {
-        y: 1100,
-        y2: 1200,
-        fillColor: '#f0ff01', //g3
-        opacity: opacity.value,
-      },
-      {
-        y: 1200,
-        y2: 1300,
-        fillColor: '#8cdee3', //p1
-        opacity: opacity.value,
-      },
-      {
-        y: 1300,
-        y2: 1400,
-        fillColor: '#54cdd5', //p2
-        opacity: opacity.value,
-      },
-      {
-        y: 1400,
-        y2: 1500,
-        fillColor: '#01b5c0', //p3
-        opacity: opacity.value,
-      },
-      {
-        y: 1500,
-        y2: 1600,
-        fillColor: '#da8ce8', //d1
-        opacity: opacity.value,
-      },
-      {
-        y: 1600,
-        y2: 1700,
-        fillColor: '#c854dd', //d2
-        opacity: opacity.value,
-      },
-      {
-        y: 1700,
-        y2: 1800,
-        fillColor: '#ad01cc', //d3
-        opacity: opacity.value,
-      },
-      {
-        y: 1800,
-        y2: 1900,
-        fillColor: '#8cdd8e', //a1
-        opacity: opacity.value,
-      },
-      {
-        y: 1900,
-        y2: 2000,
-        fillColor: '#54cc57', //a2
-        opacity: opacity.value,
-      },
-      {
-        y: 2000,
-        y2: 2100,
-        fillColor: '#01b305', //a3
-        opacity: opacity.value,
-      },
-    ]
+        label: {
+          text: rankShort[fillColorList.indexOf(color)],
+          textAnchor: 'start',
+          position: 'left',
+          offsetX: 15,
+          offsetY: 15,
+          style: {
+            cssClass: 'y-axis-annotation-label',
+            color: "green",
+            fontFamily: "Mulish",
+            padding: {
+              top: 3,
+              bottom: 3,
+              left: 0,
+              right: 0,
+            }
+          }
+        }
+      }
+    })
   },
   xaxis: {
     labels: {
@@ -317,7 +237,7 @@ const options = ref({
     forceNiceScale: true,
     opposite: true,
     labels: {
-      show: true,
+      show: false,
       align: 'right',
       rotate: 90,
       style: {
@@ -344,6 +264,64 @@ const options = ref({
     colors: 'white'
   }
 })
+const options2 = ref({
+  chart: {
+    type: 'line',
+    height: 100,
+    toolbar: {
+      show: false
+    },
+    dataLabels: {
+      enabled: false,
+      enabledOnSeries: false
+    },
+  },
+  grid: {
+    show: false,
+    borderColor: "white",
+  },
+  tooltip: {
+    enabled: false
+  },
+  xaxis: {
+    labels: {
+      show: false
+    }
+  },
+  yaxis: {
+    stepSize: 100,
+    forceNiceScale: true,
+    opposite: true,
+    labels: {
+      show: false,
+      align: 'right',
+      rotate: 90,
+      style: {
+        fontSize: '14px',
+        fontFamily: 'DM Sans',
+        fontWeight: 600,
+        colors: 'white',
+        cssClass: 'y-axis-label-letter-spacing'
+      },
+      formatter: function (v) {
+        return eloToRank(v)
+      }
+    }
+  },
+  markers: {
+    size: 0,
+    colors: 'white',
+    strokeWidth: 0,
+    lineCap: 'round'
+  },
+  stroke: {
+    show: true,
+    width: 4,
+    colors: '#000'
+  }
+})
+
+
 const series = ref([])
 
 const route = useRoute()
@@ -355,6 +333,7 @@ const getRecentMatches = async () => {
     const dateHistory = res.data.data.map(match => {
      return moment.unix(match.date_raw).fromNow()
     })
+    peakElo.value = Math.max(...eloHistory)
 
     series.value = [{
       name: "elo",
@@ -381,24 +360,96 @@ onMounted(() => {
       y2: immoRr.value[0],
       fillColor: '#ff8c8c',
       opacity: opacity.value,
+        label: {
+          text: 'imm 1',
+          textAnchor: 'start',
+          position: 'left',
+          offsetX: 15,
+          offsetY: 15,
+          style: {
+            cssClass: 'y-axis-annotation-label',
+            color: "green",
+            fontFamily: "DM Sans",
+            padding: {
+              top: 3,
+              bottom: 3,
+              left: 0,
+              right: 0,
+            }
+          }
+        }
     },
     {
       y: immoRr.value[0],
       y2: immoRr.value[1],
       fillColor: '#ff5454',
       opacity: opacity.value,
+        label: {
+          text: 'imm 2',
+          textAnchor: 'start',
+          position: 'left',
+          offsetX: 15,
+          offsetY: 15,
+          style: {
+            cssClass: 'y-axis-annotation-label',
+            color: "green",
+            fontFamily: "DM Sans",
+            padding: {
+              top: 3,
+              bottom: 3,
+              left: 0,
+              right: 0,
+            }
+          }
+        }
     },
     {
       y: immoRr.value[1],
       y2: immoRr.value[2],
       fillColor: '#ff0101',
       opacity: opacity.value,
+        label: {
+          text: 'imm 3',
+          textAnchor: 'start',
+          position: 'left',
+          offsetX: 15,
+          offsetY: 15,
+          style: {
+            cssClass: 'y-axis-annotation-label',
+            color: "green",
+            fontFamily: "DM Sans",
+            padding: {
+              top: 3,
+              bottom: 3,
+              left: 0,
+              right: 0,
+            }
+          }
+        }
     },
     {
       y: immoRr.value[2],
       y2: 5000,
       fillColor: '#ffd801',
       opacity: opacity.value,
+        label: {
+          text: 'radiant',
+          textAnchor: 'start',
+          position: 'left',
+          offsetX: 15,
+          offsetY: 15,
+          style: {
+            cssClass: 'y-axis-annotation-label',
+            color: "green",
+            fontFamily: "DM Sans",
+            padding: {
+              top: 3,
+              bottom: 3,
+              left: 0,
+              right: 0,
+            }
+          }
+        }
     },
   )
 
@@ -410,16 +461,20 @@ onMounted(() => {
   <div>
     <div class="embed">
       <div class="lineChart">
-        <apexchart type="line" :options="options" :series="series" width="600px" height="200px" style="padd" />
+        <apexchart type="line" :options="options" :series="series" width="600px" height="200px" />
+        <apexchart type="line" :options="options2" :series="series" width="600px" height="200px" style="position: absolute; top: 8px;" />
       </div>
       <div class="sidePanel">
         <div class="sidePanelText">
           <div v-if="matches.data">{{ matches.data[0].currenttierpatched}}</div>
-          <div v-if="matches.data">{{ matches.data[0].ranking_in_tier }}RR</div>
-          <div><span v-if="matches.data">(<span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }})</span></div>
+          <div v-if="matches.data">
+            {{ matches.data[0].ranking_in_tier }}RR
+            <span v-if="matches.data" class="sidePanelDelta"><span v-if="matches.data">(<span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }})</span></span>
+          </div>
+          <div v-if="matches.data" class="sidePanelPeak">Peak: {{ eloToRankShort(peakElo) }}</div>
         </div>
 
-        <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" style="width: 100px;" /></div>
+        <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" style="width: 90px;" /></div>
       </div>
     </div>
     
@@ -431,6 +486,8 @@ onMounted(() => {
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Space+Mono&display=swap');
 /* DM Sans */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+/* Mulsih */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 .embed {
   display: flex;
@@ -438,8 +495,7 @@ onMounted(() => {
   width: 750px;
 
   color: white;
-  background: rgb(2,0,36);
-  background: linear-gradient(90deg, rgba(2,0,36,0.8016340325192577) 0%, rgba(0,0,0,0.7960317916228992) 75%, rgba(255,0,0,0) 100%);
+  background: linear-gradient(89deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.5) 75%, rgba(255,0,0,0) 100%);
 }
 
 .sidePanel {
@@ -449,14 +505,32 @@ onMounted(() => {
  justify-content: space-evenly;
 }
 
+.sidePanelDelta {
+  font-size: 14px;
+}
+
 .sidePanelText {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
-  filter: drop-shadow(0 0 0.5rem black);
+  text-shadow: #000 0px 0px 4px,   #000 0px 0px 4px,   #000 0px 0px 4px,
+             #000 0px 0px 4px,   #000 0px 0px 4px,   #000 0px 0px 4px;
+}
+
+.sidePanelPeak {
+  padding-top: 4px;
+  font-size: 12px;
 }
 
 .y-axis-label-letter-spacing {
+  letter-spacing: 1px;
+}
+
+.y-axis-annotation-label {
+  writing-mode: vertical-lr;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: bold;
   letter-spacing: 1px;
 }
 </style>
