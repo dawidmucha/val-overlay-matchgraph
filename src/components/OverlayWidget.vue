@@ -167,6 +167,7 @@ const eloToRankShort = (elo, index) => { // turns Y axis value (e.g. 1710) into 
   const rankShort = rankName + " " + rr + "RR"
   return rankShort
 }
+const topOffset = ref(0)
 
 const matches = ref('')
 const data = ref({
@@ -346,6 +347,9 @@ const getRecentMatches = async () => {
 
 
 onMounted(() => {
+  const endsWithEmbed = /.*embed$/
+  topOffset.value = endsWithEmbed.exec(route.path) ? 0 : '317px'
+
   switch(route.params.region) {
     case "latam": case "kr": immoRr.value = [2190, 2250, 2300]; break
     case "br": immoRr.value = [2200, 2330, 2440]; break
@@ -462,7 +466,7 @@ onMounted(() => {
     <div class="embed">
       <div class="lineChart">
         <apexchart type="line" :options="options" :series="series" width="600px" height="200px" />
-        <apexchart type="line" :options="options2" :series="series" width="600px" height="200px" style="position: absolute; top: 8px;" />
+        <apexchart type="line" :options="options2" :series="series" width="600px" height="200px" class="phantomChart" />
       </div>
       <div class="sidePanel">
         <div class="sidePanelText">
@@ -496,6 +500,11 @@ onMounted(() => {
 
   color: white;
   background: linear-gradient(89deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.5) 75%, rgba(255,0,0,0) 100%);
+}
+
+.phantomChart {
+  position: absolute;
+  top: v-bind(topOffset);
 }
 
 .sidePanel {
