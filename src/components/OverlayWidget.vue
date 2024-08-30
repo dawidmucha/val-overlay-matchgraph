@@ -168,6 +168,7 @@ const eloToRankShort = (elo, index) => { // turns Y axis value (e.g. 1710) into 
   return rankShort
 }
 const topOffset = ref(0)
+const errMsg = ref('')
 
 const matches = ref('')
 const data = ref({
@@ -327,8 +328,18 @@ const series = ref([])
 
 const route = useRoute()
 
+const autoRefresh = () => {
+  getRecentMatches()
+
+  setTimeout(() => {
+    autoRefresh()
+    console.log('bumpin that')
+  }, 300000) // 5 mins
+}
+
 const getRecentMatches = async () => {
   axios.get(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${route.params.region}/${route.params.name}/${route.params.tag}?api_key=${process.env.VUE_APP_VALAPI}`).then((res) => {
+    console.log(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${route.params.region}/${route.params.name}/${route.params.tag}?api_key=${process.env.VUE_APP_VALAPI}`)
     matches.value = res.data 
     const eloHistory = res.data.data.map(match => match.elo)
     const dateHistory = res.data.data.map(match => {
@@ -341,12 +352,15 @@ const getRecentMatches = async () => {
       data: eloHistory.reverse()
       // data: [0, 500, 1000, 1500, 2000, 2300]
     }]
+  }).catch(err => {
+    errMsg.value = "Look's like the nickname might be wrong. Try again with a correct one. \nError code: " + err
   })
 }
 
 
 
 onMounted(() => {
+  autoRefresh()
   const endsWithEmbed = /.*embed$/
   topOffset.value = endsWithEmbed.exec(route.path) ? 0 : '317px'
 
@@ -463,7 +477,8 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="embed">
+    <div v-if="errMsg">{{ errMsg }}</div>
+    <div class="embed" v-if="!errMsg">
       <div class="lineChart">
         <apexchart type="line" :options="options" :series="series" width="600px" height="200px" />
         <apexchart type="line" :options="options2" :series="series" width="600px" height="200px" class="phantomChart" />
@@ -481,7 +496,6 @@ onMounted(() => {
         <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" style="width: 90px;" /></div>
       </div>
     </div>
-    
   </div>
 </template>
 
