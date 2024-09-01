@@ -9,9 +9,9 @@ const routes = [
   { path: '/val-overlay-matchgraph/', component: HomeScreen },
   { path: '/val-overlay-matchgraph/:name/:tag/:region', component: OverlayPage },
   { path: '/val-overlay-matchgraph/:name/:tag/:region/embed', component: OverlayWidget },
-  { path: '/val-overlay-matchgraph/:name', redirect: '/' },
-  { path: '/val-overlay-matchgraph/:name/:tag', redirect: '/' },
-  { path: '/val-overlay-matchgraph/:pathMatch(.*)*', redirect: '/' }
+  { path: '/val-overlay-matchgraph/:name', redirect: '/val-overlay-matchgraph/' },
+  { path: '/val-overlay-matchgraph/:name/:tag', redirect: '/val-overlay-matchgraph/' },
+  { path: '/val-overlay-matchgraph/:pathMatch(.*)*', redirect: '/val-overlay-matchgraph/' }
 ]
 
 const router = createRouter({
