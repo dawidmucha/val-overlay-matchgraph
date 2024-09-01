@@ -6,12 +6,12 @@ import OverlayWidget from '@/components/OverlayWidget.vue'
 import OverlayPage from '@/components/OverlayPage.vue'
 
 const routes = [
-  { path: '/', component: HomeScreen },
-  { path: '/:name/:tag/:region', component: OverlayPage },
-  { path: '/:name/:tag/:region/embed', component: OverlayWidget },
-  { path: '/:name', redirect: '/' },
-  { path: '/:name/:tag', redirect: '/' },
-  { path: '/:pathMatch(.*)*', redirect: '/' }
+  { path: '/val-overlay-matchgraph/', component: HomeScreen },
+  { path: '/val-overlay-matchgraph/:name/:tag/:region', component: OverlayPage },
+  { path: '/val-overlay-matchgraph/:name/:tag/:region/embed', component: OverlayWidget },
+  { path: '/val-overlay-matchgraph/:name', redirect: '/' },
+  { path: '/val-overlay-matchgraph/:name/:tag', redirect: '/' },
+  { path: '/val-overlay-matchgraph/:pathMatch(.*)*', redirect: '/' }
 ]
 
 const router = createRouter({
