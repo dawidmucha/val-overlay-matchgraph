@@ -10,7 +10,7 @@ const copied = ref('')
 const onCopy = () => { 
   copied.value = 'copied!' 
 
-  navigator.clipboard.writeText("FIX AFTER DEPLOYMENT" + route.path + '/embed')
+  navigator.clipboard.writeText("https://dawidmucha.github.io/val-overlay-matchgraph/#/" + route.path + '/embed')
 
 }
 </script>
