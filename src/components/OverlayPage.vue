@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import HomeScreen from '@/components/HomeScreen.vue'
+import NavbarComponent from './NavbarComponent.vue';
 import OverlayWidget from '@/components/OverlayWidget.vue'
 
 const route = useRoute()
@@ -11,12 +11,11 @@ const onCopy = () => {
   copied.value = 'copied!' 
 
   navigator.clipboard.writeText("https://dawidmucha.github.io/val-overlay-matchgraph/#/" + route.path + '/embed')
-
 }
 </script>
 
 <template>
-  <HomeScreen />
+  <NavbarComponent />
   <h1>Graph for {{route.params.name}}#{{route.params.tag}} ({{route.params.region.toUpperCase()}})</h1>
   <div>
     <OverlayWidget />

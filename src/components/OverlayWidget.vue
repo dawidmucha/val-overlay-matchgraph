@@ -1,9 +1,13 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment'
+
+const series = ref([])
+
+const route = useRoute()
 
 const opacity = ref(0.5)
 const fillColorList = [
@@ -323,10 +327,9 @@ const options2 = ref({
   }
 })
 
-
-const series = ref([])
-
-const route = useRoute()
+watch(route, () => {
+  getRecentMatches()
+})
 
 const autoRefresh = () => {
   getRecentMatches()
