@@ -12,12 +12,12 @@ import NavbarComponent from './NavbarComponent.vue';
       <li>This projest uses <a href="https://github.com/Henrik-3/unofficial-valorant-api" target="_blank">Henrik-3's Unofficial Valorant API</a> and <a href="https://apexcharts.com/" target="_blank">ApexCharts.js</a></li>
       <li>The graph shows MMR from games played in the last 2 weeks OR last 20 games, if more were played. This is a limitation on Riot's side</li>
       <li>Becuase of limited spots in a Radiant/Immortal ranks, graph might not be entirely accurate as it assigns rank based only on MMR (current rank tier and RR)</li>
-      <li>Graph should auto-refresh every 5 minutes</li>
+      <li>Graph should auto-refresh every 5 minutes</li> 
     </ul>
   </div>
 </template>
 
-<style>
+<!-- <style>
 /* Roboto */
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Space+Mono&display=swap');
 
@@ -30,4 +30,4 @@ import NavbarComponent from './NavbarComponent.vue';
 li {
   padding: 0.3rem;
 }
-</style>
+</style> -->
