@@ -22,68 +22,37 @@ const onSubmit = () => {
 </script>
 
 <template>
-  <h1 @click="router.push('/')" id="logo">VALORANT Rank Graph</h1>
+  <div class="bg-yellow-200/50 flex flex-col items-center">
+    <h1 @click="router.push('/')" class="text-3xl p-3">VALORANT Rank Graph</h1>
 
-  <form @submit.prevent="onSubmit">
-    <div class="formNick">
-      <div>Nickname (with tag):</div>
-      <div><input type="text" name="nickname" id="nickname" placeholder="nickname#1234" @change="onNicknameChange($event)" /></div>
-    </div>
-    <div class="formRegion">
-      <select name="region" id="region" @change="onRegionChange($event)">
-        <option value="" disabled selected>Choose region</option>
-        <option value="latam">LATAM (Latin America)</option>
-        <option value="kr">KR (Korea)</option>
-        <option value="br">BR (Brazil)</option>
-        <option value="na">NA (North America)</option>
-        <option value="apc">APC (Asia-Pacific)</option>
-        <option value="eu">EU (Europe)</option>
-      </select>
-    </div>
-    <div class="formSubmit">
-      <input type="submit"  value="Submit" />
-    </div>
-  </form>
+    <form @submit.prevent="onSubmit" class="flex flex-col items-center">
+      <div class="p-3">
+        <div class="p-1 pb-0">Nickname (with tag):</div>
+        <div class="p-1">
+          <input class="p-1 border-2 border-gray-500/30 rounded" type="text" name="nickname" id="nickname" placeholder="nickname#1234" @change="onNicknameChange($event)" />
+        </div>
+
+        <div class="m-2">
+          <select name="region" id="region" @change="onRegionChange($event)" class="p-0.5 self-stretch bg-gray-300" style="width: 100%;">
+            <option value="" disabled selected>Choose region</option>
+            <option value="na">NA (North America)</option>
+            <option value="eu">EU (Europe)</option>
+            <option value="latam">LATAM (Latin America)</option>
+            <option value="br">BR (Brazil)</option>
+            <option value="apc">APC (Asia-Pacific)</option>
+            <option value="kr">KR (Korea)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-green-500 rounded p-2 m-2 text-center font-semibold">
+        <input type="submit" value="Submit" class="uppercase" />
+      </div>
+    </form>
+  </div>
 </template>
 
 <style>
 /* Roboto */
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Space+Mono&display=swap');
-
-#logo {
-  cursor: pointer;
-  -webkit-user-select: none; /* Safari */        
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
-}
-
-body {
-  background-color: #B19859;
-  font-family: 'Roboto', sans-serif;
-  text-align: center;
-}
-
-h1 {
-  font-size: 50px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  font-size: 18px;
-}
-
-.formNick, .formRegion {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-.info {
-  text-align: center;
-  margin-top: 2rem;
-  list-style-position: inside
-}
 </style>

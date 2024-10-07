@@ -336,7 +336,6 @@ const autoRefresh = () => {
 
   setTimeout(() => {
     autoRefresh()
-    console.log('bumpin that')
   }, 300000) // 5 mins
 }
 
