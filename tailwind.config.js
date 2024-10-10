@@ -6,7 +6,11 @@ export default {
     "./src/*.{js,jsx,ts,tsx,vue}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        workSans: ["Work Sans", 'sans-serif'] 
+      }
+    },
   },
   plugins: [],
 }

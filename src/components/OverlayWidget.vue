@@ -358,8 +358,6 @@ const getRecentMatches = async () => {
   })
 }
 
-
-
 onMounted(() => {
   autoRefresh()
   const endsWithEmbed = /.*embed$/
@@ -479,82 +477,26 @@ onMounted(() => {
 <template>
   <div>
     <div v-if="errMsg">{{ errMsg }}</div>
-    <div class="embed" v-if="!errMsg">
-      <div class="lineChart">
-        <apexchart type="line" :options="options" :series="series" width="600px" height="200px" />
-        <apexchart type="line" :options="options2" :series="series" width="600px" height="200px" class="phantomChart" />
+    <div v-else-if="matches.data" class="inline-flex bg-gradient-to-r from-black/70 to-black/0">
+      <div>
+        <apexchart type="line" :options="options" :series="series" width="600px" height="200px" class="absolute" />
+        <apexchart type="line" :options="options2" :series="series" width="600px" height="200px" />
       </div>
-      <div class="sidePanel">
-        <div class="sidePanelText">
-          <div v-if="matches.data">{{ matches.data[0].currenttierpatched}}</div>
-          <div v-if="matches.data">
-            {{ matches.data[0].ranking_in_tier }}RR
-            <span v-if="matches.data" class="sidePanelDelta"><span v-if="matches.data">(<span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }})</span></span>
-          </div>
-          <div v-if="matches.data" class="sidePanelPeak">Peak: {{ eloToRankShort(peakElo) }}</div>
+      <div class="flex flex-col items-center justify-center font-workSans font-bold">
+        <div>
+          {{ matches.data[0].currenttierpatched}}
         </div>
-
-        <div v-if="matches.data"><img :src="matches.data[0].images.small" alt="rank icon" style="width: 90px;" /></div>
+        <div>
+          {{ matches.data[0].ranking_in_tier }}RR
+          <span><span>(<span v-if="(matches.data[0].elo - matches.data[matches.data.length-1].elo) > 0">+</span>{{ matches.data[0].elo - matches.data[matches.data.length-1].elo }})</span></span>
+        </div>
+        <div>
+          Peak: {{ eloToRankShort(peakElo) }}
+        </div>
+        <div>
+          <img :src="matches.data[0].images.large" alt="rank icon" style="width: 90px;" />
+        </div>
       </div>
     </div>
   </div>
 </template>
-
-<style>
-/* Roboto */
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Space+Mono&display=swap');
-/* DM Sans */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-/* Mulsih */
-@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
-
-.embed {
-  display: flex;
-  font-family: 'Roboto', sans-serif;
-  width: 750px;
-
-  color: white;
-  background: linear-gradient(89deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.5) 75%, rgba(255,0,0,0) 100%);
-}
-
-.phantomChart {
-  position: absolute;
-  top: v-bind(topOffset);
-}
-
-.sidePanel {
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: space-evenly;
-}
-
-.sidePanelDelta {
-  font-size: 14px;
-}
-
-.sidePanelText {
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  text-shadow: #000 0px 0px 4px,   #000 0px 0px 4px,   #000 0px 0px 4px,
-             #000 0px 0px 4px,   #000 0px 0px 4px,   #000 0px 0px 4px;
-}
-
-.sidePanelPeak {
-  padding-top: 4px;
-  font-size: 12px;
-}
-
-.y-axis-label-letter-spacing {
-  letter-spacing: 1px;
-}
-
-.y-axis-annotation-label {
-  writing-mode: vertical-lr;
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-</style>

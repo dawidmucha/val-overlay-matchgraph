@@ -45,7 +45,7 @@ const onSubmit = () => {
         </div>
       </div>
 
-      <div class="bg-green-500 rounded p-2 m-2 text-center font-semibold">
+      <div class="bg-green-700 rounded p-2 m-2 text-center font-semibold text-gray-200">
         <input type="submit" value="Submit" class="uppercase" />
       </div>
     </form>
@@ -53,6 +53,5 @@ const onSubmit = () => {
 </template>
 
 <style>
-/* Roboto */
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Space+Mono&display=swap');
+
 </style>
