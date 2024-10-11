@@ -23,7 +23,7 @@ const onSubmit = () => {
 
 <template>
   <div class="bg-yellow-200/50 flex flex-col items-center">
-    <h1 @click="router.push('/')" class="text-3xl p-3">VALORANT Rank Graph</h1>
+    <h1 @click="router.push('/')" class="text-6xl p-3">VALORANT Rank Graph</h1>
 
     <form @submit.prevent="onSubmit" class="flex flex-col items-center">
       <div class="p-3">
