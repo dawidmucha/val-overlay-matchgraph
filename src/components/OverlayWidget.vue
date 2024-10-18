@@ -216,12 +216,15 @@ const options = ref({
           text: rankShort[fillColorList.indexOf(color)],
           textAnchor: 'start',
           position: 'left',
-          offsetX: 15,
-          offsetY: 15,
+          borderWidth: 0,
+          offsetX: 5,
+          offsetY: 30,
           style: {
-            cssClass: 'y-axis-annotation-label',
-            color: "green",
-            fontFamily: "Mulish",
+            background: ['rgba(0, 0, 0, .0)'],
+            fontSize: '22px',
+            color: ["black"],
+            fontFamily: "Work Sans",
+            fontWeight: 600,
             padding: {
               top: 3,
               bottom: 3,
@@ -299,25 +302,13 @@ const options2 = ref({
     forceNiceScale: true,
     opposite: true,
     labels: {
-      show: false,
-      align: 'right',
-      rotate: 90,
-      style: {
-        fontSize: '14px',
-        fontFamily: 'DM Sans',
-        fontWeight: 600,
-        colors: 'white',
-        cssClass: 'y-axis-label-letter-spacing'
-      },
-      formatter: function (v) {
-        return eloToRank(v)
-      }
+      show: false
     }
   },
   markers: {
-    size: 0,
-    colors: 'white',
-    strokeWidth: 0,
+    size: 4,
+    colors: 'black',
+    strokeWidth: 1,
     lineCap: 'round'
   },
   stroke: {
@@ -381,12 +372,15 @@ onMounted(() => {
           text: 'imm 1',
           textAnchor: 'start',
           position: 'left',
-          offsetX: 15,
-          offsetY: 15,
+          borderWidth: 0,
+          offsetX: 5,
+          offsetY: 30,
           style: {
-            cssClass: 'y-axis-annotation-label',
-            color: "green",
-            fontFamily: "DM Sans",
+            background: ['rgba(0, 0, 0, .0)'],
+            fontSize: '22px',
+            fontWeight: 600,
+            color: ["black"],
+            fontFamily: "Work Sans",
             padding: {
               top: 3,
               bottom: 3,
@@ -405,12 +399,15 @@ onMounted(() => {
           text: 'imm 2',
           textAnchor: 'start',
           position: 'left',
-          offsetX: 15,
-          offsetY: 15,
+          borderWidth: 0,
+          offsetX: 5,
+          offsetY: 30,
           style: {
-            cssClass: 'y-axis-annotation-label',
-            color: "green",
-            fontFamily: "DM Sans",
+            background: ['rgba(0, 0, 0, .0)'],
+            fontSize: '22px',
+            fontWeight: 600,
+            color: ["black"],
+            fontFamily: "Work Sans",
             padding: {
               top: 3,
               bottom: 3,
@@ -429,12 +426,15 @@ onMounted(() => {
           text: 'imm 3',
           textAnchor: 'start',
           position: 'left',
-          offsetX: 15,
-          offsetY: 15,
+          borderWidth: 0,
+          offsetX: 5,
+          offsetY: 30,
           style: {
-            cssClass: 'y-axis-annotation-label',
-            color: "green",
-            fontFamily: "DM Sans",
+            background: ['rgba(0, 0, 0, .0)'],
+            fontSize: '22px',
+            fontWeight: 600,
+            color: ["black"],
+            fontFamily: "Work Sans",
             padding: {
               top: 3,
               bottom: 3,
@@ -453,12 +453,15 @@ onMounted(() => {
           text: 'radiant',
           textAnchor: 'start',
           position: 'left',
-          offsetX: 15,
-          offsetY: 15,
+          borderWidth: 0,
+          offsetX: 5,
+          offsetY: 30,
           style: {
-            cssClass: 'y-axis-annotation-label',
-            color: "green",
-            fontFamily: "DM Sans",
+            background: ['rgba(0, 0, 0, .0)'],
+            fontSize: '22px',
+            color: ["black"],
+            fontFamily: "Work Sans",
+            fontWeight: 600,
             padding: {
               top: 3,
               bottom: 3,
